@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Секретное письмо</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0e6f6; /* Пастельный фиолетовый */
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            position: relative;
+        }
+
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .envelope::before {
+        	content: '';
+        	position: absolute;
+        	border-left: 150px solid transparent;
+        	border-right: 150px solid transparent;
+        	border-top: 90px solid #e0a8d0; /* Уменьшил высоту треугольника */
+        	top: -10px; /* Опустил треугольник ниже */
+        	transition: all 0.3s; /* Добавил плавность для анимации открытия */
+    	}
+
+        .letter {
+            position: absolute;
+            top: 0;
+            width: 280px;
+            height: 180px;
+	    left: -10px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: none;
+            transform: translateY(-20px);
+        }
+
+        .open .envelope {
+            transform: translateY(-50px);
+        }
+
+        .open .envelope::before {
+            transform: rotateX(180deg);
+	    
+            transition: transform 0.3s;
+        }
+
+        .open .letter {
+            display: block;
+            animation: slideUp 0.5s forwards;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(0); opacity: 0; }
+            to { transform: translateY(-120px); opacity: 1; }
+        }
+
+        .text {
+            line-height: 1.5;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="envelope" onclick="toggleEnvelope()"></div>
+        <div class="letter">
+            <div class="text" id="letterText"></div>
+        </div>
+    </div>
+
+    <script>
+        // Здесь можно изменить текст письма
+        const message = `Дорогая Настя🌷
+
+Ты как первый весенний день после долгой зимы — 
+в твоём присутствии растворяется любая грусть.
+Когда ты рассказываешь о своих планах,
+я ловлю себя на мысли, что твои истории такие
+интересные и прикольные. 
+
+Спасибо за твою удивительную способность
+слушать меня, мои мысли и идеи.
+Ты — человек-подарок, и я каждый день благодарю 
+судьбу за наше случайное "привет"😊`;
+
+        // Инициализация текста
+        document.getElementById('letterText').innerText = message;
+
+        function toggleEnvelope() {
+            document.querySelector('.container').classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
