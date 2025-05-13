@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Секретные письма</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f0f7;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .selector {
+            position: absolute;
+            top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .container {
+            position: relative;
+            margin-top: 40px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: transform 0.4s;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 95px solid #e8c5dc;
+            top: -5px;
+            transition: all 0.4s;
+        }
+
+        .letter {
+            position: absolute;
+            top: -50px;
+	    left: -15px;
+            width: 300px;
+            min-height: 120px;
+            max-height: 400px;
+            background: #fff9fd;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+            transform: translateY(-20px);
+            overflow-y: auto;
+            border-radius: 8px;
+            line-height: 1.6;
+            color: #4a3a4a;
+        }
+
+        .open .envelope {
+            transform: translateY(-60px);
+        }
+
+        .open .envelope::before {
+            transform: rotateX(180deg);
+            filter: brightness(0.95);
+        }
+
+        .open .letter {
+            display: block;
+            animation: letterAppear 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes letterAppear {
+            0% { transform: translateY(0); opacity: 0; }
+            100% { transform: translateY(-140px); opacity: 1; }
+        }
+
+        .text {
+            white-space: pre-line;
+            word-wrap: break-word;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="envelope" onclick="toggleEnvelope()"></div>
+        <div class="letter">
+            <div class="text" id="letterText"></div>
+        </div>
+    </div>
+    <div class="letter" onclick="toggleEnvelope()">
+      <div class="text" id="letterText"></div>
+    </div>
+
+    <script>
+        const MAX_SYMBOLS = 550;
+        const messages = {
+            Oksana: `Моя дорогая Оксана,
+
+Ты как первый лучик солнца утром -
+делаешь всё как задумывала и у тебя получается.
+Спасибо за твою поддержку
+и за то тепло, что от тебя исходит.`,
+        };
+
+        let currentMessage = '';
+        let isOpen = false;
+
+        function checkText(text) {
+            if(text.length > MAX_SYMBOLS) {
+                return text.slice(0, MAX_SYMBOLS) + '...';
+            }
+            return text;
+        }
+
+        function showLetter(name) {
+            if(isOpen) toggleEnvelope();
+            currentMessage = checkText(messages[name]);
+            document.getElementById('letterText').innerText = currentMessage;
+        }
+
+        function toggleEnvelope() {
+            const container = document.querySelector('.container');
+            container.classList.toggle('open');
+            isOpen = !isOpen;
+        }
+
+        showLetter('Oksana');
+    </script>
+</body>
+</html>
