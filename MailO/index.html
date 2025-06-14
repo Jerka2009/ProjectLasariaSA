@@ -13,11 +13,16 @@
             box-sizing: border-box;
         }
         
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
         body {
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
             background: linear-gradient(135deg, #ffafbd, #ffc3a0, #a18cd1);
-            overflow: hidden;
+            overflow-y: auto;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -33,51 +38,55 @@
             max-width: 800px;
             padding: 20px;
             text-align: center;
+            margin: 20px auto;
         }
         
         .header {
-            margin-bottom: 30px;
+            margin-bottom: -30px;
             position: relative;
         }
         
         .header h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 8vw, 4rem);
             color: #d6418c;
             text-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 10px;
         }
         
         .header p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             color: #5a2d82;
         }
         
         .love-message {
             position: absolute;
-            top: -30px;
+            bottom: -40px;
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
             color: #ff2a6d;
             opacity: 0;
             pointer-events: none;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             z-index: 20;
+            white-space: nowrap;
         }
         
         .envelope {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2), 0 0 60px rgba(255, 105, 180, 0.3);
-            padding: 40px 30px;
+            padding: clamp(20px, 5vw, 40px) clamp(15px, 3vw, 30px);
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
             cursor: pointer;
             border: 2px solid #ffafbd;
             transform-origin: center;
+            margin: 0 auto;
+            max-width: 95%;
         }
         
         .envelope:hover {
@@ -86,13 +95,13 @@
         }
         
         .letter-content {
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 3vw, 1.25rem);
             line-height: 1.8;
             text-align: left;
-            margin: 20px 0;
+            margin: clamp(10px, 3vw, 20px) 0;
             position: relative;
             z-index: 2;
-            padding: 20px;
+            padding: clamp(10px, 3vw, 20px);
             border-left: 3px solid #ffafbd;
             background: rgba(255, 255, 255, 0.5);
             border-radius: 0 10px 10px 0;
@@ -100,9 +109,9 @@
         
         .signature {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.2rem;
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
             text-align: right;
-            margin-top: 30px;
+            margin-top: clamp(15px, 3vw, 30px);
             color: #d6418c;
             font-weight: bold;
         }
@@ -118,12 +127,13 @@
         
         /* Анимированные фоновые элементы */
         .stars {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
+            pointer-events: none;
         }
         
         .star {
@@ -207,7 +217,7 @@
         }
         
         .letter-content p {
-            margin: 20px 0;
+            margin: clamp(10px, 3vw, 20px) 0;
             animation: fadeIn 1.5s forwards;
             opacity: 0;
             cursor: pointer;
@@ -227,7 +237,7 @@
         
         .instructions {
             margin-top: 20px;
-            font-size: 1rem;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
             color: #5a2d82;
             opacity: 0.8;
             animation: pulse 2s infinite;
@@ -236,17 +246,33 @@
         .footer {
             margin-top: 40px;
             color: #5a2d82;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
             opacity: 0.7;
         }
         
         /* Адаптивность */
         @media (max-width: 768px) {
-            .header h1 { font-size: 3rem; }
-            .letter-content { font-size: 1rem; }
-            .container { padding: 10px; }
-            .signature { font-size: 1.8rem; }
-            .love-message { font-size: 2rem; top: -25px; }
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 10px;
+            }
+            .envelope {
+                padding: 20px 15px;
+            }
+            .letter-content {
+                padding: 15px 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .envelope {
+                padding: 15px 10px;
+            }
+            .letter-content p {
+                padding: 3px 6px;
+            }
         }
     </style>
 </head>
@@ -323,7 +349,7 @@
                 
                 heart.style.left = `${posX}px`;
                 heart.style.top = `${posY}px`;
-                heart.style.fontSize = `${Math.random() * 30 + 20}px`;
+                heart.style.fontSize = `${Math.random() * 20 + 15}px`;
                 heart.style.opacity = '1';
                 heart.style.zIndex = '1000';
                 heart.style.color = `hsl(${Math.random() * 360}, 80%, 65%)`;
@@ -350,7 +376,9 @@
                 
                 // Удаляем сердечко после анимации
                 setTimeout(() => {
-                    heart.remove();
+                    if (heart.parentNode) {
+                        heart.parentNode.removeChild(heart);
+                    }
                 }, duration * 1000);
             }
         }
@@ -369,7 +397,7 @@
                 this.classList.add('shake');
                 
                 // Создаем вылетающие сердечки из разных позиций
-                createFlyingHearts(10, envelope);
+                createFlyingHearts(8, envelope);
                 
                 // Показываем сообщение о любви
                 showLoveMessage();
@@ -385,7 +413,7 @@
         paragraphs.forEach(p => {
             p.addEventListener('click', function() {
                 // Создаем сердечки из позиции клика
-                createFlyingHearts(5, this);
+                createFlyingHearts(4, this);
                 
                 // Показываем сообщение о любви
                 showLoveMessage();
@@ -394,7 +422,7 @@
         
         // Создаем несколько сердечек при загрузке страницы
         setTimeout(() => {
-            createFlyingHearts(5, envelope);
+            createFlyingHearts(4, envelope);
         }, 1000);
         
         // Добавляем периодические сердечки на фон
@@ -406,7 +434,7 @@
             heart.style.position = 'fixed';
             heart.style.left = `${Math.random() * 100}%`;
             heart.style.top = `100%`;
-            heart.style.fontSize = `${Math.random() * 30 + 20}px`;
+            heart.style.fontSize = `${Math.random() * 20 + 15}px`;
             heart.style.opacity = Math.random() * 0.7 + 0.3;
             heart.style.color = `hsl(${Math.random() * 360}, 80%, 65%)`;
             
@@ -418,17 +446,36 @@
             
             // Удаляем сердечко после анимации
             setTimeout(() => {
-                heart.remove();
+                if (heart.parentNode) {
+                    heart.parentNode.removeChild(heart);
+                }
             }, duration * 1000);
         }
         
         // Создаем несколько фоновых сердечек
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 10; i++) {
             setTimeout(createBackgroundHeart, i * 1000);
         }
         
         // Продолжаем создавать фоновые сердечки
         setInterval(createBackgroundHeart, 2000);
+        
+        // Адаптация при изменении размера окна
+        window.addEventListener('resize', function() {
+            // Пересоздаем фоновые звезды для адаптивности
+            starsContainer.innerHTML = '';
+            for (let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.opacity = Math.random() * 0.5 + 0.1;
+                star.style.setProperty('--duration', `${Math.random() * 4 + 2}s`);
+                starsContainer.appendChild(star);
+            }
+        });
     </script>
 </body>
 </html>
